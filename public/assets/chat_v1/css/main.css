@@ -1,0 +1,159 @@
+html,body{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-image: url('../imgs/bg.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+
+.chat_container{
+    overflow: scroll;
+    width: 100%;
+    height: 90%;
+    padding: 2vh;
+    display: none;
+}
+
+.chat_container::-webkit-scrollbar{
+    display: none;
+}
+/* User msg */
+
+.user_msg{
+    position: relative;
+    width: fit-content !important;
+    min-width: 30%;
+    max-width: 80% !important;
+    word-wrap: break-word;
+    border-radius: 8px;
+    background-color: #54595E;
+    color: white;
+    padding: 4vh 8vh 2vh 2vh;
+    float: right;
+    clear: both;
+    font-size: 1em;
+    margin-bottom: 2vh;
+}
+
+.user_msg::after{
+    content: '';
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 10px solid transparent;
+	border-left-color: #54595E;
+	border-right: 0;
+	margin-top: -10px;
+	margin-right: -10px;
+}
+
+.user_msg_ac{
+    position: relative;
+    width: fit-content !important;
+    min-width: 30%;
+    max-width: 80% !important;
+    word-wrap: break-word;
+    border-radius: 8px;
+    background-color: #54595E;
+    color: white;
+    padding: 4vh 8vh 2vh 2vh;
+    float: right;
+    clear: both;
+    font-size: 1em;
+    margin-bottom: 2vh;
+}
+
+/* Robot msg*/
+
+.robot_msg{
+    position: relative;
+    width: fit-content !important;
+    min-width: 30%;
+    max-width: 80% !important;
+    word-wrap: break-word;
+    border-radius: 8px;
+    background-color: #CCCCCC;
+    color: #343A40;
+    padding: 4vh 8vh 2vh 2vh;
+    float: left;
+    clear: both;
+    font-size: 1em;
+    margin-bottom: 2vh;
+}
+
+.robot_msg::after{
+    content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 10px solid transparent;
+	border-right-color: #CCCCCC;
+	border-left: 0;
+	margin-top: -10px;
+	margin-left: -10px;
+}
+
+.robot_msg_ac{
+    position: relative;
+    width: fit-content !important;
+    min-width: 30%;
+    max-width: 80% !important;
+    word-wrap: break-word;
+    border-radius: 8px;
+    background-color: #CCCCCC;
+    color: #343A40;
+    padding: 4vh 8vh 2vh 2vh;
+    float: left;
+    clear: both;
+    font-size: 1em;
+    margin-bottom: 2vh;
+}
+
+.user_name{
+    max-width: 80%;
+    font-size: 0.8em;
+    font-style: italic;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    padding: 2px 2vh 0 0;
+}
+.user_name::before{
+    content: '~'
+}
+
+/* hour label*/
+
+.hour{
+    font-size: 0.6em;
+    opacity: 0.6;
+    padding: 0vh 2vh 1vh 1vh;
+}
+
+/* Chat Input */
+
+.chat_input{
+    display: none;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(169, 169, 169, 0.8);
+    padding: 2vh 2vh 0 2vh;
+}
+
+.user_input{
+    position: absolute;
+    bottom: 45%;
+    width: 100%;
+    background-color: rgba(169, 169, 169, 0.8);
+    padding: 2vh 2vh 0 2vh;
+}
+

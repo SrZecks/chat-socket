@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat</title>
+
+    <!-- My CSS-->
+    <link rel="stylesheet" href="../../assets/chat_v1/css/main.css">
+    <link rel="stylesheet" href="../../assets/chat_v1/css/ubicua_animate.css">
+    <!-- W3 CSS-->
+    <link rel="stylesheet" href="../../assets/chat_v1/css/w3.css">
+    <!-- BootsTrap CSS-->
+    <link rel="stylesheet" href="../../assets/chat_v1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/chat_v1/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="../../assets/chat_v1/css/bootstrap-reboot.min.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+        integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <section id="user_area">
+        <div class="user_input">
+            <div class="input-group mb-3">
+                <input id="user_name_input" type="text" class="form-control form-control-lg text-center"
+                    placeholder="Your name here...." aria-label="Message..." aria-describedby="basic-addon2">
+            </div>
+            <div class="text-center">
+                <button id="user_name_btn" class="btn btn-dark" type="button">Join the chat</button>
+            </div>
+            <br>
+        </div>
+    </section>
+
+    <div id="chat" class="chat_container">
+
+    </div>
+
+    <div class="chat_input">
+        <div class="input-group mb-3">
+            <input id="msg_input" type="text" class="form-control" placeholder="Message..." aria-label="Message..."
+                aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button id="msg_btn" class="btn btn-dark" type="button"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JQuery -->
+    <script src="../../assets/chat_v1/js/jquery-3.4.1.min.js"></script>
+    <script src="../../assets/chat_v1/js/jquery.scrollTo-min.js"></script>
+
+    <!--Bootstrap Script-->
+    <script src="../../assets/chat_v1/js/popper.min.js"></script>
+    <script src="../../assets/chat_v1/js/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/chat_v1/js/bootstrap.min.js"></script>
+
+    <!-- My script 
+    <script src="../../assets/chat_v1/js/main.js"></script>
+    -->
+
+    <!--Socket-->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        function send_msg(name, data) {
+            var time = new Date().toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: "numeric",
+                minute: "numeric"
+            });
+
+            var new_msg = "<div class='user_msg w3-display-container w3-card scale-in-right'>" +
+                "<div class='user_name w3-display-topright'>" + name + "</div><span class='span_text'>"
+                + data + "</span><div class='hour w3-display-bottomright'>" + time + "</div></div>";
+
+            var old_msg = "<div class='user_msg_ac w3-display-container w3-card scale-in-right'>" +
+                "<div class='user_name w3-display-topright'>" + name + "</div><span class='span_text'>"
+                + data + "</span><div class='hour w3-display-bottomright'>" + time + "</div></div>";
+
+            if ($('#chat').children().length > 0) {
+                if ($('#chat').children().last().attr('class').includes('user_msg')) {
+                    $('#chat').append(old_msg);
+
+                } else if ($('#chat').children().last().attr('class').includes('user_msg_ac')) {
+                    $('#chat').append(new_msg);
+                }
+                else {
+                    $('#chat').append(new_msg);
+                }
+            } else {
+                $('#chat').append(new_msg)
+            }
+        };
+
+        function receive_msg(name, data) {
+            var time = new Date().toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: "numeric",
+                minute: "numeric"
+            });
+
+            var new_msg = "<div class='robot_msg w3-display-container w3-card scale-in-right'>" +
+                "<div class='user_name w3-display-topright'>" + name + "</div><span class='span_text'>"
+                + data + "</span><div class='hour w3-display-bottomright'>" + time + "</div></div>";
+
+            var old_msg = "<div class='robot_msg_ac w3-display-container w3-card scale-in-right'>" +
+                "<div class='user_name w3-display-topright'>" + name + "</div><span class='span_text'>"
+                + data + "</span><div class='hour w3-display-bottomright'>" + time + "</div></div>";
+
+            if ($('#chat').children().length > 0) {
+                if ($('#chat').children().last().attr('class').includes('robot_msg')) {
+                    $('#chat').append(old_msg);
+
+                } else if ($('#chat').children().last().attr('class').includes('robot_msg_ac')) {
+                    $('#chat').append(new_msg);
+                }
+                else {
+                    $('#chat').append(new_msg);
+                }
+            } else {
+                $('#chat').append(new_msg)
+            }
+        };
+
+        $(function () {
+            var socket = io.connect();
+            var user_name = '';
+            var name = $('#user_name_input');
+            var msg = $('#msg_input');
+            var chat = $('#chat');
+
+            $('#user_name_input').keyup(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    if (name.val().length > 0) {
+                        socket.emit('send_user', name.val());
+                        user_name = name.val();
+                        name.val('');
+                    }
+                }
+            });
+
+            $('#user_name_btn').click(function (e) {
+                if (name.val().length > 0) {
+                    socket.emit('send_user', name.val());
+                    user_name = name.val();
+                    name.val('');
+
+                }
+            });
+
+            $('#msg_input').keyup(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    if (msg.val().length > 0) {
+                        socket.emit('send_message', user_name, msg.val());
+                        msg.val('');
+                    }
+                }
+            });
+
+            $('#msg_btn').click(function (e) {
+                if (msg.val().length > 0) {
+                    socket.emit('send_message', user_name, msg.val());
+                    msg.val('');
+                }
+            });
+
+            socket.on('new_message', function (data) {
+                console.log("Id: " + socket.id);
+                console.log("User: " + user_name);
+                console.log("Msg: " + data.msg);
+
+                if (data.id == socket.id) {
+                    send_msg(data.name, data.msg);
+                    $('#chat').scrollTo($('#chat').children().last());
+                }
+                else {
+                    receive_msg(data.name, data.msg);
+                    $('#chat').scrollTo($('#chat').children().last());
+                }
+            });
+
+            socket.on('new_user', function (data) {
+                console.log("New user: " + data.name);
+                if (data.id == socket.id) {
+                    $('#user_area').css('display', 'none');
+                    $('.chat_container').css('display', 'block');
+                    $('.chat_input').css('display', 'block');
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>
